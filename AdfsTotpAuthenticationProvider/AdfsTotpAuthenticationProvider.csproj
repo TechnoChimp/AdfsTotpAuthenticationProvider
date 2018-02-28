@@ -37,6 +37,12 @@
     <AssemblyOriginatorKeyFile>AdfsTotpAuthenticationProviderSigningKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.Core.3.3.19\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.DynamoDBv2, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.DynamoDBv2.3.3.6\lib\net45\AWSSDK.DynamoDBv2.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IdentityServer.Web">
       <HintPath>..\Resources\Microsoft.IdentityServer.Web.dll</HintPath>
       <Private>False</Private>
@@ -62,6 +68,8 @@
     <Compile Include="Interfaces\ISecretStorageProvider.cs" />
     <Compile Include="Interfaces\IUsedCodeProvider.cs" />
     <Compile Include="Providers\ActiveDirectorySecretStorageProvider.cs" />
+    <Compile Include="Providers\DynamoDbSecretStorageProvider.cs" />
+    <Compile Include="Providers\DynamoDbUsedCodeProvider.cs" />
     <Compile Include="Providers\NullUsedCodeProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -72,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AdfsTotpAuthenticationProviderSigningKey.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthenticationForm.html" />
@@ -81,6 +90,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\AWSSDK.DynamoDBv2.3.3.6\analyzers\dotnet\cs\AWSSDK.DynamoDBv2.CodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

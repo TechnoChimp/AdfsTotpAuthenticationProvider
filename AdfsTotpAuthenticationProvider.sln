@@ -5,6 +5,18 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdfsTotpAuthenticationProvider", "AdfsTotpAuthenticationProvider\AdfsTotpAuthenticationProvider.csproj", "{81BA6876-FAC3-4AAE-BE28-A175147A7772}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9CF01A71-C57A-4262-974F-77A3822404CB}"
+	ProjectSection(SolutionItems) = preProject
+		RegisterPrimary.ps1 = RegisterPrimary.ps1
+		RegisterSecondary.ps1 = RegisterSecondary.ps1
+		Unregister.ps1 = Unregister.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E512B925-5BA4-4175-86BB-3BD0131868CE}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

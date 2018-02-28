@@ -4,7 +4,7 @@ namespace AdfsTotpAuthenticationProvider.Providers
 {
     class NullUsedCodeProvider : IUsedCodeProvider
     {
-        public bool CodeIsUsed(string upn, long interval, int pastIntervals)
+        public bool IsCodeUsed(string upn, long interval)
         {
             return false;
         }

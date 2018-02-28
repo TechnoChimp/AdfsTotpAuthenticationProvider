@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace AdfsTotpAuthenticationProvider
 {
@@ -8,7 +9,7 @@ namespace AdfsTotpAuthenticationProvider
         {
             using (var sw = new StreamWriter(@"C:\MFA\logs.txt", true))
             {
-                sw.WriteLine(text);
+                sw.WriteLine($"{DateTime.Now:yyyy-MM-ddTHH:mm:ssZ}\t{text}");
             }
         }
     }

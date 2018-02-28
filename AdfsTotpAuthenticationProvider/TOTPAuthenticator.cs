@@ -71,7 +71,7 @@ namespace AdfsTotpAuthenticationProvider
             for (var timeIndex = currentInterval - PastIntervals; timeIndex <= currentInterval + FutureIntervals; timeIndex++)
             {
                 var intervalCode = GetCode(secretKey, timeIndex);
-                var intervalCodeHasBeenUsed = usedCodeProvider.CodeIsUsed(upn, timeIndex, PastIntervals);
+                var intervalCodeHasBeenUsed = usedCodeProvider.IsCodeUsed(upn, timeIndex);
 
                 if (!intervalCodeHasBeenUsed && ConstantTimeEquals(intervalCode, code))
                 {

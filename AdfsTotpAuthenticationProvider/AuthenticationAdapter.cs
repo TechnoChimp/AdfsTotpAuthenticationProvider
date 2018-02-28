@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using AdfsTotpAuthenticationProvider.Execeptions;
 using AdfsTotpAuthenticationProvider.Interfaces;
 using AdfsTotpAuthenticationProvider.Providers;
 using Microsoft.IdentityServer.Web.Authentication.External;
@@ -10,7 +7,7 @@ namespace AdfsTotpAuthenticationProvider
 {
     public class AuthenticationAdapter : IAuthenticationAdapter
     {
-        private ActiveDirectorySecretStorageProvider _secretStorageProvider;
+        private ISecretStorageProvider _secretStorageProvider;
         private IUsedCodeProvider _usedCodeProvider;
 
         public IAdapterPresentation BeginAuthentication(System.Security.Claims.Claim identityClaim, System.Net.HttpListenerRequest request, IAuthenticationContext context)
@@ -18,7 +15,7 @@ namespace AdfsTotpAuthenticationProvider
             IAdapterPresentation result;
 
             var upn = identityClaim.Value;
-            
+
             var secretKey = _secretStorageProvider.GetSecretKey(upn);
 
             context.Data.Add("upn", upn);
@@ -39,14 +36,6 @@ namespace AdfsTotpAuthenticationProvider
             return result;
         }
 
-        private static string NormalizeUpn(string upn)
-        {
-            if (upn.Contains("@"))
-                return upn.Substring(0, upn.IndexOf("@", StringComparison.Ordinal));
-
-            return upn;
-        }
-
         public bool IsAvailableForUser(System.Security.Claims.Claim identityClaim, IAuthenticationContext context)
         {
             return true;
@@ -56,6 +45,18 @@ namespace AdfsTotpAuthenticationProvider
 
         public void OnAuthenticationPipelineLoad(IAuthenticationMethodConfigData configData)
         {
+            try
+            {
+                _secretStorageProvider = new DynamoDbSecretStorageProvider();
+                _usedCodeProvider = new DynamoDbUsedCodeProvider();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                Logger.Log(ex.StackTrace);
+            }
+
+            /*
             if (configData?.Data == null)
                 throw new NoConfigurationException();
 
@@ -63,33 +64,10 @@ namespace AdfsTotpAuthenticationProvider
             {
                 var config = reader.ReadToEnd();
 
-                var ldapServer = "";
-                var ldapOu = "";
-                var ldapSecretField = "info";
-
-                var lines = config.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("#"))
-                        continue;
-
-                    if (line.StartsWith("LdapServer"))
-                        ldapServer = line.Substring(10).Trim();
-
-                    if (line.StartsWith("LdapOu"))
-                        ldapOu = line.Substring(6).Trim();
-
-                    if (line.StartsWith("LdapSecretField"))
-                        ldapSecretField = line.Substring(15).Trim();
-                }
-
-                if (string.IsNullOrWhiteSpace(ldapServer) || string.IsNullOrWhiteSpace(ldapOu) || string.IsNullOrWhiteSpace(ldapSecretField))
-                    throw new InvalidConfigurationException();
-
-                _secretStorageProvider = new ActiveDirectorySecretStorageProvider(ldapServer, ldapOu, ldapSecretField);
+                _secretStorageProvider = ActiveDirectorySecretStorageProvider.CreateFromConfig(config);
                 _usedCodeProvider = new NullUsedCodeProvider();
             }
+            */
         }
 
         public void OnAuthenticationPipelineUnload()

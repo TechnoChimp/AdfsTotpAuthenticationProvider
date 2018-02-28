@@ -1,4 +1,5 @@
-﻿using System.DirectoryServices;
+﻿using System;
+using System.DirectoryServices;
 using AdfsTotpAuthenticationProvider.Execeptions;
 using AdfsTotpAuthenticationProvider.Interfaces;
 
@@ -9,6 +10,35 @@ namespace AdfsTotpAuthenticationProvider.Providers
         private readonly string _ldapServer;
         private readonly string _ldapOu;
         private readonly string _ldapSecretField;
+
+        public static ActiveDirectorySecretStorageProvider CreateFromConfig(string config)
+        {
+            var ldapServer = "";
+            var ldapOu = "";
+            var ldapSecretField = "info";
+
+            var lines = config.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("#"))
+                    continue;
+
+                if (line.StartsWith("LdapServer"))
+                    ldapServer = line.Substring(10).Trim();
+
+                if (line.StartsWith("LdapOu"))
+                    ldapOu = line.Substring(6).Trim();
+
+                if (line.StartsWith("LdapSecretField"))
+                    ldapSecretField = line.Substring(15).Trim();
+            }
+
+            if (string.IsNullOrWhiteSpace(ldapServer) || string.IsNullOrWhiteSpace(ldapOu) || string.IsNullOrWhiteSpace(ldapSecretField))
+                throw new InvalidConfigurationException();
+
+            return new ActiveDirectorySecretStorageProvider(ldapServer, ldapOu, ldapSecretField);
+        }
 
         public ActiveDirectorySecretStorageProvider(string ldapServer, string ldapOu, string ldapSecretField = "info")
         {
