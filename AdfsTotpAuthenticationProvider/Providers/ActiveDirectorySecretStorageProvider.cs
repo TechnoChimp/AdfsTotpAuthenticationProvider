@@ -1,4 +1,5 @@
 ﻿using System.DirectoryServices;
+using AdfsTotpAuthenticationProvider.Execeptions;
 using AdfsTotpAuthenticationProvider.Interfaces;
 
 namespace AdfsTotpAuthenticationProvider.Providers
@@ -20,6 +21,9 @@ namespace AdfsTotpAuthenticationProvider.Providers
         {
             var user = SearchUser(upn);
 
+            if (user == null)
+                throw new UserNotFoundException();
+
             return user.GetDirectoryEntry().Properties[_ldapSecretField].Value as string;
         }
 
@@ -38,7 +42,7 @@ namespace AdfsTotpAuthenticationProvider.Providers
 
             var search = new DirectorySearcher(myLdapConnection)
             {
-                Filter = "(cn=" + upn + ")"
+                Filter = "(userPrincipalName=" + upn + ")"
             };
 
             return search.FindOne();

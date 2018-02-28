@@ -14,8 +14,10 @@ namespace AdfsTotpAuthenticationProvider
         {
             get
             {
-                var result = new Dictionary<int, string>();
-                result.Add(1033, "AdfsTotpAuthenticationProvider");
+                var result = new Dictionary<int, string>
+                {
+                    { 1033, "AdfsTotpAuthenticationProvider" }
+                };
                 return result;
             }
         }
@@ -24,8 +26,10 @@ namespace AdfsTotpAuthenticationProvider
         {
             get
             {
-                var result = new Dictionary<int, string>();
-                result.Add(1033, "AdfsTotpAuthenticationProvider");
+                var result = new Dictionary<int, string>
+                {
+                    {1033, "AdfsTotpAuthenticationProvider"}
+                };
                 return result;
             }
         }

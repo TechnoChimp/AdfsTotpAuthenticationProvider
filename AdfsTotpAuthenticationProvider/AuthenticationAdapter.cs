@@ -17,7 +17,8 @@ namespace AdfsTotpAuthenticationProvider
         {
             IAdapterPresentation result;
 
-            var upn = NormalizeUpn(identityClaim.Value);
+            var upn = identityClaim.Value;
+            
             var secretKey = _secretStorageProvider.GetSecretKey(upn);
 
             context.Data.Add("upn", upn);

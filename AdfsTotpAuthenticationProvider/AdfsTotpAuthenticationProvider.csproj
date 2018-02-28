@@ -56,6 +56,8 @@
     <Compile Include="AuthenticationAdapterMetadata.cs" />
     <Compile Include="Execeptions\InvalidConfigurationException.cs" />
     <Compile Include="Execeptions\NoConfigurationException.cs" />
+    <Compile Include="Execeptions\UserNotFoundException.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\ISecretStorageProvider.cs" />
     <Compile Include="Interfaces\IUsedCodeProvider.cs" />
