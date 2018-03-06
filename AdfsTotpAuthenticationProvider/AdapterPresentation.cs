@@ -34,7 +34,7 @@ namespace AdfsTotpAuthenticationProvider
 
                 var text = "<p>Please configure your Authenticator App (Authy, Google Authenticator, Microsoft Verificator or other) using the QR code below.</p><br />";
 
-                htmlTemplate = htmlTemplate.Replace("PICTUREHERE", text + string.Format("<img width=\"{0}\" height=\"{1}\" src=\"https://chart.googleapis.com/chart?chs={0}x{1}&amp;chld=M%7C0&amp;cht=qr&amp;chl=otpauth%3A%2F%2Ftotp%2FGBSLAB%3A{2}%3Fsecret%3D{3}\">", width, height, this._upn, this._secretKey));
+                htmlTemplate = htmlTemplate.Replace("PICTUREHERE", text + string.Format("<img width=\"{0}\" height=\"{1}\" src=\"https://chart.googleapis.com/chart?chs={0}x{1}&amp;chld=M%7C0&amp;cht=qr&amp;chl=otpauth%3A%2F%2Ftotp%2F{2}%3Fsecret%3D{3}\">", width, height, this._upn, this._secretKey));
             }
 
             return htmlTemplate;
