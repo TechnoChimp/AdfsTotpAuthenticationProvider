@@ -2,7 +2,7 @@
 {
     public interface ISecretStorageProvider
     {
-        string GetSecretKey(string upn);
-        void SetSecretKey(string upn, string secret);
+        SecretKey GetSecretKey(string upn);
+        void SetSecretKey(string upn, SecretKey secret);
     }
 }

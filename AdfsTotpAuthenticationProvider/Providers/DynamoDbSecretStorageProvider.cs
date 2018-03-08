@@ -14,24 +14,29 @@ namespace AdfsTotpAuthenticationProvider.Providers
             _table = Table.LoadTable(_client, "adfs-mfa-secrets");
         }
 
-        public string GetSecretKey(string upn)
+        public SecretKey GetSecretKey(string upn)
         {
             var item = _table.GetItem(upn);
 
             if (item == null)
                 return null;
 
-            return item["secret"];
+            return new SecretKey()
+            {
+                Key = item["secret"],
+                Activated = item["activated"] == "true"
+            };
         }
 
-        public void SetSecretKey(string upn, string secret)
+        public void SetSecretKey(string upn, SecretKey secret)
         {
             var item = _table.GetItem(upn) ?? new Document
             {
                 ["upn"] = upn
             };
 
-            item["secret"] = secret;
+            item["secret"] = secret.Key;
+            item["activated"] = secret.Activated ? "true" : "false";
 
             _table.PutItem(item);
         }

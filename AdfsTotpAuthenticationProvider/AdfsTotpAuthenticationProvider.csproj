@@ -67,15 +67,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\ISecretStorageProvider.cs" />
     <Compile Include="Interfaces\IUsedCodeProvider.cs" />
-    <Compile Include="Providers\ActiveDirectorySecretStorageProvider.cs" />
     <Compile Include="Providers\DynamoDbSecretStorageProvider.cs" />
     <Compile Include="Providers\DynamoDbUsedCodeProvider.cs" />
-    <Compile Include="Providers\NullUsedCodeProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SecretKey.cs" />
     <Compile Include="TotpAuthenticator.cs" />
   </ItemGroup>
   <ItemGroup>

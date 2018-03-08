@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.IdentityServer.Web.Authentication.External;
+﻿using Microsoft.IdentityServer.Web.Authentication.External;
 
 namespace AdfsTotpAuthenticationProvider
 {
     internal class AdapterPresentation : IAdapterPresentationForm
     {
         private readonly string _upn;
-        private readonly string _secretKey;
+        private readonly SecretKey _secretKey;
 
-        public AdapterPresentation(string upn = null, string secretKey = null)
+        public AdapterPresentation(string upn = null, SecretKey secretKey = null)
         {
             _upn = upn;
             _secretKey = secretKey;
@@ -23,18 +22,18 @@ namespace AdfsTotpAuthenticationProvider
         {
             var htmlTemplate = Resources.AuthenticationForm;
 
-            if (string.IsNullOrEmpty(_secretKey))
+            if (_secretKey == null || _secretKey.Activated)
             {
                 htmlTemplate = htmlTemplate.Replace("PICTUREHERE", "");
             }
             else
             {
-                var width = 150;
-                var height = 150;
+                const int width = 150;
+                const int height = 150;
 
-                var text = "<p>Please configure your Authenticator App (Authy, Google Authenticator, Microsoft Verificator or other) using the QR code below.</p><br />";
+                const string text = "<p>Please configure your Authenticator App (Authy, Google Authenticator, Microsoft Verificator or other) using the QR code below.</p><br />";
 
-                htmlTemplate = htmlTemplate.Replace("PICTUREHERE", text + string.Format("<img width=\"{0}\" height=\"{1}\" src=\"https://chart.googleapis.com/chart?chs={0}x{1}&amp;chld=M%7C0&amp;cht=qr&amp;chl=otpauth%3A%2F%2Ftotp%2F{2}%3Fsecret%3D{3}\">", width, height, this._upn, this._secretKey));
+                htmlTemplate = htmlTemplate.Replace("PICTUREHERE", text + string.Format("<img width=\"{0}\" height=\"{1}\" src=\"https://chart.googleapis.com/chart?chs={0}x{1}&amp;chld=M%7C0&amp;cht=qr&amp;chl=otpauth%3A%2F%2Ftotp%2F{2}%3Fsecret%3D{3}\">", width, height, _upn, _secretKey.Key));
             }
 
             return htmlTemplate;

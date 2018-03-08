@@ -12,28 +12,24 @@ namespace AdfsTotpAuthenticationProvider
 
         public IAdapterPresentation BeginAuthentication(System.Security.Claims.Claim identityClaim, System.Net.HttpListenerRequest request, IAuthenticationContext context)
         {
-            IAdapterPresentation result;
-
             var upn = identityClaim.Value;
 
             var secretKey = _secretStorageProvider.GetSecretKey(upn);
 
             context.Data.Add("upn", upn);
 
-            if (string.IsNullOrEmpty(secretKey))
+            if (secretKey == null)
             {
-                secretKey = TotpAuthenticator.GenerateSecretKey();
+                secretKey = new SecretKey
+                {
+                    Key = TotpAuthenticator.GenerateSecretKey(),
+                    Activated = false
+                };
 
                 _secretStorageProvider.SetSecretKey(upn, secretKey);
-
-                result = new AdapterPresentation(upn, secretKey);
-            }
-            else
-            {
-                result = new AdapterPresentation();
             }
 
-            return result;
+            return new AdapterPresentation(upn, secretKey);
         }
 
         public bool IsAvailableForUser(System.Security.Claims.Claim identityClaim, IAuthenticationContext context)
@@ -55,19 +51,6 @@ namespace AdfsTotpAuthenticationProvider
                 Logger.Log(ex.Message);
                 Logger.Log(ex.StackTrace);
             }
-
-            /*
-            if (configData?.Data == null)
-                throw new NoConfigurationException();
-
-            using (var reader = new StreamReader(configData.Data, Encoding.UTF8))
-            {
-                var config = reader.ReadToEnd();
-
-                _secretStorageProvider = ActiveDirectorySecretStorageProvider.CreateFromConfig(config);
-                _usedCodeProvider = new NullUsedCodeProvider();
-            }
-            */
         }
 
         public void OnAuthenticationPipelineUnload()
@@ -97,10 +80,20 @@ namespace AdfsTotpAuthenticationProvider
             var upn = (string)context.Data["upn"];
             var code = (string)proofData.Properties["ChallengeQuestionAnswer"];
 
-            if (TotpAuthenticator.CheckCode(upn, _secretStorageProvider.GetSecretKey(upn), code, _usedCodeProvider))
+            var secretKey = _secretStorageProvider.GetSecretKey(upn);
+
+            if (TotpAuthenticator.CheckCode(upn, secretKey.Key, code, _usedCodeProvider))
             {
                 var claim = new System.Security.Claims.Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod", "http://schemas.microsoft.com/ws/2012/12/authmethod/otp");
+
                 claims = new[] { claim };
+
+                if (!secretKey.Activated)
+                {
+                    secretKey.Activated = true;
+
+                    _secretStorageProvider.SetSecretKey(upn, secretKey);
+                }
             }
             else
             {
