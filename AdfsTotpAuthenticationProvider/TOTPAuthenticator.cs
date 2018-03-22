@@ -16,9 +16,39 @@ namespace AdfsTotpAuthenticationProvider
 
         public static string GenerateSecretKey()
         {
-            var random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            return new string((new char[SecretKeyLength])
+                .Select(c => c = AllowedCharacters[NextRandomInt(0, AllowedCharacters.Length)]).ToArray());
+        }
 
-            return new string((new char[SecretKeyLength]).Select(c => c = AllowedCharacters[random.Next(0, AllowedCharacters.Length)]).ToArray());
+        private static Int32 NextRandomInt(Int32 minValue, Int32 maxValue)
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                var uint32Buffer = new byte[sizeof(UInt32)];
+
+                if (minValue > maxValue)
+                    throw new ArgumentOutOfRangeException(nameof(minValue));
+
+                if (minValue == maxValue) return minValue;
+
+                Int64 diff = maxValue - minValue;
+
+                while (true)
+                {
+                    rng.GetBytes(uint32Buffer);
+                    UInt32 rand = BitConverter.ToUInt32(uint32Buffer, 0);
+
+                    Int64 max = (1 + (Int64)UInt32.MaxValue);
+
+                    Int64 remainder = max % diff;
+
+                    if (rand < max - remainder)
+                    {
+                        return (Int32)(minValue + (rand % diff));
+                    }
+                }
+            }
+
         }
 
         private static long GetInterval(DateTime dateTime)
